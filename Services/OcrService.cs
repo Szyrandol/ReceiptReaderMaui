@@ -14,8 +14,12 @@
             if (itemList.Count > 0)
                 return itemList;
 
+            using var fileContent = new ByteArrayContent(File.ReadAllBytes(imagePath));
+            // Set correct image MIME type based on file extension
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // or "image/png", etc.
+
             using var formData = new MultipartFormDataContent();
-            formData.Add(new ByteArrayContent(File.ReadAllBytes(imagePath)), "image", "image.jpg");
+            formData.Add(fileContent, "file", "image.jpg");
 
             var response = await httpClient.PostAsync("http://localhost:5000/ocr", formData);
             if (response.IsSuccessStatusCode)

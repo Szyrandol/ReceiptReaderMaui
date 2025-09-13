@@ -1,13 +1,22 @@
 ﻿using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ReceiptReader.Model;
 public class Item
 {
     public string Name { get; set; }
-    public double Value { get; set; }
-    public string StringValue { get; set; }
+    public double Price { get; set; }
 
     public Item(string newline)
+    {
+        ParseFromOcrLine(newline);
+    }
+    public Item(Item item)
+    {
+        Name = item.Name;
+        Price = item.Price;
+    }
+    private void ParseFromOcrLine(string newline)
     {
         StringBuilder sb = new();
         bool isNamed = false;
@@ -16,7 +25,6 @@ public class Item
         foreach (char c in newline)
         {
             sb.Append(c);
-
             if (!isNamed)
             {
                 if (isPrevWhiteSpace && char.IsWhiteSpace(c))
@@ -45,9 +53,15 @@ public class Item
 
         sb.Replace(" ", ""); // ocr workaround again
 
-        Value = double.Parse(sb.ToString()) / 100; // format culture could be faster
-        StringValue = sb.ToString();
+        Price = double.Parse(sb.ToString()) / 100; // format culture could be faster but this works
     }
+    [JsonConstructor]
+    public Item(string name, double price)
+    {
+        Name = name;
+        Price = price;
+    }
+    public override bool Equals(object? obj) => obj is Item other && (Name == other.Name && Price == other.Price);
 }
 //quantity?
 //total value?

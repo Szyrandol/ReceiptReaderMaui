@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ReceiptReader.Model"
+             xmlns:viewmodel="clr-namespace:ReceiptReader.ViewModel"
+             x:DataType="viewmodel:ReceiptsViewModel"
+             x:Class="ReceiptReader.View.ReceiptCollectionPage"
+             xmlns:conv="clr-namespace:ReceiptReader.Presentation.Resources"
+             Title="{Binding Title}">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:ReferenceEqualityMultiConverter x:Key="RefEqMulti"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="*,*"
+      ColumnSpacing="5"
+      RowDefinitions="*, 100"
+      RowSpacing="0">
+
+        <Button Text="Sync Receipts" Command="{Binding GetAllFromRepositoryCommand}"
+                Grid.Row="1" Grid.Column="1" Margin="10"/>
+        
+        <Button Text="Create Receipt" Command="{Binding CreateCommand}"
+                Grid.Row="1" Grid.Column="0" Margin="10"/>
+
+        <CollectionView Grid.Column="0" Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Receipts}">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Receipt">
+                    <VerticalStackLayout>
+                    <!--receipt rows-->
+                        <Border>
+                            <Grid Margin="10" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                                <Label Text="{Binding Name}"
+                                   Grid.Column="0"
+                                   Padding="5"/>
+
+                                <Label  Text="{Binding Total, StringFormat='{0:F2}'}"
+                                    Grid.Column="1"
+                                    Padding="5"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="1" />
+                            </Grid>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=ToggleExpandCommand}"
+                                                      CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                        
+                    <!--details rows-->
+                        <ContentView>
+                            <ContentView.IsVisible>
+                                <MultiBinding Converter="{StaticResource RefEqMulti}">
+                                    <Binding Path="." />
+                                    <Binding Path="ExpandedReceipt"
+                                             Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}" />
+                                </MultiBinding>
+                            </ContentView.IsVisible>
+
+                            <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#EEE">
+                                <Button Text="Edit"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=EditCommand}"
+                                        CommandParameter="{Binding .}" />
+                                <Button Text="Delete"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=DeleteCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </HorizontalStackLayout>
+                        </ContentView>
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

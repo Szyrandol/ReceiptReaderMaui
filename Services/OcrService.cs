@@ -35,7 +35,7 @@
 
         private List<Item> JsonStringToItemList(string jsonText)
         {
-            Console.WriteLine("jsonText");
+            Console.WriteLine(jsonText);
             List<Item> result = new();
             using (JsonDocument doc = JsonDocument.Parse(jsonText))
             {
@@ -47,9 +47,8 @@
                     result.Add(item);
                 }
             }
-            result[result.Count - 1].Value *= 10;
+            result[result.Count - 1].Price *= 10;
             result[result.Count - 1].Name = "SUMA";
-            result[result.Count - 1].StringValue += "0 PLN";
             return result;
         }
     }

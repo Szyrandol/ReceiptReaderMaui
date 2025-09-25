@@ -1,9 +1,8 @@
 ﻿global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
-global using ReceiptReader.Model;
-global using ReceiptReader.Services;
+global using ReceiptReader.Domain.Entities;
 global using ReceiptReader.View;
-global using ReceiptReader.ViewModel;
+global using ReceiptReader.Presentation.ViewModel;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;

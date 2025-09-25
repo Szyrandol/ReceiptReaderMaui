@@ -1,4 +1,4 @@
-﻿namespace ReceiptReader.ViewModel;
+﻿namespace ReceiptReader.Presentation.ViewModel;
 
 //[INotifyPropertyChanged] // 
 public partial class BaseViewModel : ObservableObject

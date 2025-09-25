@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace ReceiptReader.Presentation.Resources;
+namespace ReceiptReader.Presentation.Converters;
 
 class ReferenceEqualityConverter : IValueConverter
 {

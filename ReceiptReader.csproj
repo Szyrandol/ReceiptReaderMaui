@@ -69,13 +69,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="View\NewReceiptPage.xaml.cs">
-	    <DependentUpon>NewReceiptPage.xaml</DependentUpon>
+	  <Compile Update="Presentation\View\ReceiptPage.xaml.cs">
+	    <DependentUpon>ReceiptPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="View\ReceiptCollectionPage.xaml">
+	  <MauiXaml Update="Presentation\View\ReceiptCollectionPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

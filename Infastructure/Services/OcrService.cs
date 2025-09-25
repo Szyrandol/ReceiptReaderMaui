@@ -1,4 +1,4 @@
-﻿namespace ReceiptReader.Services
+﻿namespace ReceiptReader.Infastructure.Services
 {
     public class OcrService
     {

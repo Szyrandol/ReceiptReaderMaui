@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:model="clr-namespace:ReceiptReader.Model"
-             xmlns:viewmodel="clr-namespace:ReceiptReader.ViewModel"
-             x:DataType="viewmodel:ReceiptsViewModel"
+             xmlns:model="clr-namespace:ReceiptReader.Domain.Entities"
+             xmlns:viewmodel="clr-namespace:ReceiptReader.Presentation.ViewModel"
+             x:DataType="viewmodel:ReceiptCollectionViewModel"
              x:Class="ReceiptReader.View.ReceiptCollectionPage"
-             xmlns:conv="clr-namespace:ReceiptReader.Presentation.Resources"
+             xmlns:conv="clr-namespace:ReceiptReader.Presentation.Converters"
              Title="{Binding Title}">
     
     <ContentPage.Resources>
@@ -45,7 +45,7 @@
                                     MaxLines="1" />
                             </Grid>
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=ToggleExpandCommand}"
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=ToggleExpandCommand}"
                                                       CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
                         </Border>
@@ -56,16 +56,16 @@
                                 <MultiBinding Converter="{StaticResource RefEqMulti}">
                                     <Binding Path="." />
                                     <Binding Path="ExpandedReceipt"
-                                             Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}" />
+                                             Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}" />
                                 </MultiBinding>
                             </ContentView.IsVisible>
 
                             <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#EEE">
                                 <Button Text="Edit"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=EditCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=EditCommand}"
                                         CommandParameter="{Binding .}" />
                                 <Button Text="Delete"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptsViewModel}}, Path=DeleteCommand}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=DeleteCommand}"
                                         CommandParameter="{Binding .}" />
                             </HorizontalStackLayout>
                         </ContentView>

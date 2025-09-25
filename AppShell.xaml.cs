@@ -6,7 +6,7 @@
         {
             InitializeComponent();
 
-            Routing.RegisterRoute(nameof(NewReceiptPage), typeof(NewReceiptPage));
+            Routing.RegisterRoute(nameof(ReceiptPage), typeof(ReceiptPage));
         }
     }
 }

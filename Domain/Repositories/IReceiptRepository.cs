@@ -1,5 +1,4 @@
-﻿
-namespace ReceiptReader.Domain.Repositories;
+﻿namespace ReceiptReader.Domain.Repositories;
 
 public interface IReceiptRepository
 {

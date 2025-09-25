@@ -1,5 +1,4 @@
 ﻿using ReceiptReader.ApplicationLayer.Interfaces;
-using Microsoft.Maui.Controls;
 
 namespace ReceiptReader.Infastructure.MauiServices;
 

@@ -1,8 +1,6 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
 
-namespace ReceiptReader.Services;
-
+namespace ReceiptReader.ApplicationLayer.Services;
 
 public class ReceiptService
 {

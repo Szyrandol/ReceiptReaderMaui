@@ -1,12 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.VisualBasic.FileIO;
+using ReceiptReader.ApplicationLayer.Messages;
+using ReceiptReader.ApplicationLayer.Services;
 using ReceiptReader.Domain.Repositories;
-using ReceiptReader.Infastructure.Persistence;
-using ReceiptReader.Messages;
 
-namespace ReceiptReader.ViewModel;
+namespace ReceiptReader.Presentation.ViewModel;
 
-public partial class ReceiptsViewModel : BaseViewModel
+public partial class ReceiptCollectionViewModel : BaseViewModel
 {
     ReceiptService receiptService;
     IReceiptRepository _receiptRepository;
@@ -16,7 +15,7 @@ public partial class ReceiptsViewModel : BaseViewModel
     [ObservableProperty]
     public partial Receipt ExpandedReceipt { get; set; }
     //some user verification in the end should be here
-    public ReceiptsViewModel(ReceiptService receiptService, IReceiptRepository receiptRepository)
+    public ReceiptCollectionViewModel(ReceiptService receiptService, IReceiptRepository receiptRepository)
     {
         //if (internet connection) pobierz dane z serwera else wez dane z nosql pg db urządzenia 
         Title = "Receipt Collection";
@@ -38,7 +37,7 @@ public partial class ReceiptsViewModel : BaseViewModel
     [RelayCommand]
     async Task Create()
     {
-        await Shell.Current.GoToAsync(nameof(NewReceiptPage));
+        await Shell.Current.GoToAsync(nameof(ReceiptPage));
     }
     [RelayCommand]
     async Task GetReceiptsFromUserName() // every owner occurence has to be changed to user, when its finished
@@ -118,7 +117,7 @@ public partial class ReceiptsViewModel : BaseViewModel
     {
         try
         {
-            await Shell.Current.GoToAsync(nameof(NewReceiptPage), true,
+            await Shell.Current.GoToAsync(nameof(ReceiptPage), true,
                 new Dictionary<string, object>
                 {
                     { "Receipt", selectedReceipt }

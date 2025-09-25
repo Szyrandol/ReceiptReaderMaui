@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ReceiptReader.Model;
+namespace ReceiptReader.Domain.Entities;
 
 public class Receipt
 {

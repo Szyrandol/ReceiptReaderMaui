@@ -1,7 +1,6 @@
-﻿
-using CommunityToolkit.Mvvm.Messaging.Messages;
+﻿using CommunityToolkit.Mvvm.Messaging.Messages;
 
-namespace ReceiptReader.Messages;
+namespace ReceiptReader.ApplicationLayer.Messages;
 
 public class AddReceiptToCollectionMessage : ValueChangedMessage<Receipt>
 {

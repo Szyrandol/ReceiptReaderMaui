@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
 
-namespace ReceiptReader.Model;
+namespace ReceiptReader.Domain.Entities;
 public class Item
 {
     public string Name { get; set; }
@@ -61,7 +61,7 @@ public class Item
         Name = name;
         Price = price;
     }
-    public override bool Equals(object? obj) => obj is Item other && (Name == other.Name && Price == other.Price);
+    public override bool Equals(object? obj) => obj is Item other && Name == other.Name && Price == other.Price;
 }
 //quantity?
 //total value?

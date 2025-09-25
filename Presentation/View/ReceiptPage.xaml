@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ReceiptReader.Domain.Entities"
+             xmlns:viewmodel="clr-namespace:ReceiptReader.Presentation.ViewModel"
+             x:DataType="viewmodel:ReceiptViewModel"
+             x:Class="ReceiptReader.View.ReceiptPage"
+             xmlns:conv="clr-namespace:ReceiptReader.Presentation.Converters"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:ReferenceEqualityMultiConverter x:Key="RefEqMulti"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowDefinitions="Auto, Auto, *, Auto"
+          RowSpacing="0">
+
+        <StackLayout Grid.Column="1" Grid.Row="0">
+
+            <VerticalStackLayout>
+                <Grid Margin="5"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="5">
+                    <Label Text="Name:" Grid.Column="0"/>
+                    <Label Text="{Binding Receipt.Name}" Grid.Column="1"/>
+                </Grid>
+                <Grid Margin="5"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="5">
+                    <Label Text="Owner:" Grid.Column="0"/>
+                    <Label Text="{Binding Receipt.Owner}" Grid.Column="1"/>
+                </Grid>
+                <Grid Margin="5"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="5">
+                    <Label Text="Date and Time of creation:" Grid.Column="0"/>
+                    <Label Text="{Binding Receipt.DateTime}" Grid.Column="1"/>
+                </Grid>
+            </VerticalStackLayout>
+
+            <CollectionView ItemsSource="{Binding Items}" Margin="5">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Item">
+                        <VerticalStackLayout>
+                            <!--item rows-->
+                            <Border>
+                                <Grid Margin="5"
+                                  ColumnDefinitions="*,Auto"
+                                  ColumnSpacing="5" >
+                                    <Label Text="{Binding Name}" Margin="5" Grid.Column="0"/>
+
+                                    <Label  Text="{Binding Price, StringFormat='{0:F2}'}"
+                                            Grid.Column="1"
+                                            LineBreakMode="TailTruncation"
+                                            MaxLines="1"
+                                            Margin="5"/>
+                                </Grid>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=ToggleExpandCommand}"
+                                                      CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                            </Border>
+
+                            <!--details rows-->
+                            <ContentView>
+                                <ContentView.IsVisible>
+                                    <MultiBinding Converter="{StaticResource RefEqMulti}">
+                                        <Binding Path="." />
+                                        <Binding Path="ExpandedItem"
+                                             Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}" />
+                                    </MultiBinding>
+                                </ContentView.IsVisible>
+
+                                <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#EEE">
+                                    <Button Text="Edit Name"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=EditItemNameCommand}"
+                                        CommandParameter="{Binding .}" />
+                                    <Button Text="Edit Price"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=EditItemPriceCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
+                            </ContentView>
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </StackLayout>
+
+        <Border Grid.Column="1" Grid.Row="1"
+                Stroke="MediumPurple" 
+                Margin="5">
+            <Grid  Padding="5" ColumnDefinitions="*,Auto" ColumnSpacing="5">
+                <Label Text="TOTAL:" Margin="5" Grid.Column="0"/>
+                <Label  Text="{Binding Total, StringFormat='{0:F2}'}"
+                        Grid.Column="1"
+                        LineBreakMode="TailTruncation"
+                        MaxLines="1"
+                        Margin="5"/>
+            </Grid>
+        </Border>
+
+        <Image Source="{Binding ImagePath}"/>
+
+        <Button Text="Choose Receipt Image" Command="{Binding GetImagePathCommand}"
+                Grid.Row="3" Grid.Column="0" Margin="8"/>
+
+        <Button Text="Get Item Data" Command="{Binding GetItemsCommand}"
+                Grid.Row="3" Grid.Column="1" Margin="8"
+                IsVisible="{Binding IsReceiptNull}"/>
+        <Button Text="Save Receipt" Command="{Binding AddToCollectionCommand}"
+                Grid.Row="3" Grid.Column="1" Margin="8"
+                IsVisible="{Binding IsReceiptNotNull}"/>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Grid.ColumnSpan="2"
+                           Grid.RowSpan="3"/>
+    </Grid>
+
+
+
+</ContentPage>

@@ -1,8 +1,8 @@
 ﻿namespace ReceiptReader.View
 {
-    public partial class NewReceiptPage : ContentPage
+    public partial class ReceiptPage : ContentPage
     {
-        public NewReceiptPage(ItemsViewModel viewModel)
+        public ReceiptPage(ReceiptViewModel viewModel)
         {
             InitializeComponent();
             BindingContext = viewModel;

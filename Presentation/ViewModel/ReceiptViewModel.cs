@@ -1,15 +1,13 @@
-﻿
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Maui.Storage;
-using ReceiptReader.Messages;
-using Microsoft.Maui.Controls;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using ReceiptReader.ApplicationLayer.Messages;
 using ReceiptReader.ApplicationLayer.Interfaces;
 using ReceiptReader.Domain.Repositories;
 using ReceiptReader.Infastructure.Persistence;
+using ReceiptReader.Infastructure.Services;
 
-namespace ReceiptReader.ViewModel;
+namespace ReceiptReader.Presentation.ViewModel;
 [QueryProperty(nameof(Receipt), "Receipt")]
-public partial class ItemsViewModel : BaseViewModel
+public partial class ReceiptViewModel : BaseViewModel
 {
     private readonly OcrService _ocrService;
     private readonly IDialogService _dialogService;
@@ -19,10 +17,6 @@ public partial class ItemsViewModel : BaseViewModel
     [ObservableProperty]
     public partial double Total {  get; set; }
     [ObservableProperty]
-    public partial string Owner { get; set; }
-    [ObservableProperty]
-    public partial DateTime DateTime { get; set; }
-    [ObservableProperty]
     public partial string ImagePath {  get; set; }
     public ObservableCollection<Item> Items { get; set; } = new();
 
@@ -30,12 +24,13 @@ public partial class ItemsViewModel : BaseViewModel
     public partial Receipt Receipt { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsReceiptNull))]
     public partial bool IsReceiptNotNull { get; set; }
     public bool IsReceiptNull => !IsReceiptNotNull;
 
     [ObservableProperty]
     public partial Item? ExpandedItem { get; set; }
-    public ItemsViewModel(OcrService ocrService, IDialogService dialogService) // DI?
+    public ReceiptViewModel(OcrService ocrService, IDialogService dialogService) // DI?
     {
         Title = Receipt != null ? Receipt.Name : "New Receipt"; // title?
         _ocrService = ocrService;
@@ -60,10 +55,6 @@ public partial class ItemsViewModel : BaseViewModel
         }
         else
             IsReceiptNotNull = false;
-    }
-    partial void OnIsReceiptNotNullChanged(bool oldValue, bool newValue)
-    {
-        OnPropertyChanged(nameof(IsReceiptNull)); // było isnotbusy
     }
     [RelayCommand]
     async Task GetImagePath()

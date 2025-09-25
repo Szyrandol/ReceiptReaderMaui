@@ -3,6 +3,8 @@ using ReceiptReader.ApplicationLayer.Interfaces;
 using ReceiptReader.Domain.Repositories;
 using ReceiptReader.Infastructure.Persistence;
 using ReceiptReader.Infastructure.MauiServices;
+using ReceiptReader.ApplicationLayer.Services;
+using ReceiptReader.Infastructure.Services;
 
 namespace ReceiptReader
 {
@@ -20,13 +22,13 @@ namespace ReceiptReader
                 });
             //items
             builder.Services.AddSingleton<OcrService>();
-            builder.Services.AddTransient<ItemsViewModel>();
-            builder.Services.AddTransient<NewReceiptPage>();
+            builder.Services.AddTransient<ReceiptViewModel>();
+            builder.Services.AddTransient<ReceiptPage>();
 
             //receipts
             builder.Services.AddSingleton<ReceiptService>();
             builder.Services.AddSingleton<ReceiptCollectionPage>();
-            builder.Services.AddSingleton<ReceiptsViewModel>();
+            builder.Services.AddSingleton<ReceiptCollectionViewModel>();
 
             //DI
             builder.Services.AddSingleton<IReceiptRepository, JsonReceiptRepository>();

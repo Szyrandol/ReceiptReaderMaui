@@ -19,7 +19,6 @@ public partial class ReceiptViewModel : BaseViewModel
     [ObservableProperty]
     public partial string ImagePath {  get; set; }
     public ObservableCollection<Item> Items { get; set; } = new();
-
     [ObservableProperty]
     public partial Receipt Receipt { get; set; }
 

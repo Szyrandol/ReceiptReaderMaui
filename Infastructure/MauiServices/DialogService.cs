@@ -23,5 +23,4 @@ public class DialogService : IDialogService
     {
         await Shell.Current.DisplayAlert(title, message, cancel);
     }
-
 }

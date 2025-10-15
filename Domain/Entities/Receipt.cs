@@ -9,10 +9,10 @@ public class Receipt
     public double Total { get; set; }
     public string Owner { get; set; }
     public DateTime DateTime { get; set; }
-    public string ImagePath { get; set; }
+    public string? ImagePath { get; set; }
     public List<Item> Items { get; set; }
+    public string NIP { get; set; } //Żeliński poleca, niezbyt skomplikowane, ale OCR nie jest doskonały
     //public string currencyName { get; set; } potem można dodać żeby jakoś 
-    //public string NIP { get; set; } Żeliński poleca, niezbyt skomplikowane, ale OCR nie jest doskonały
 
 
     public Receipt(List<Item> items, string imagePath)//, DateTime dateTime) // chyba z datetime ale to potem
@@ -20,6 +20,8 @@ public class Receipt
         Id = Guid.NewGuid();
         Total = items[^1].Price;
         items.RemoveAt(items.Count - 1);
+        NIP = (items[0].Price * 100).ToString();
+        items.RemoveAt(0);
         Items = items;
         DateTime = DateTime.Now;
         Owner = "Admin";
@@ -37,6 +39,16 @@ public class Receipt
         Items = items ;
         ImagePath = imagePath ;
     }
+    //[JsonConstructor]
+    //public Receipt(string name, double total, List<Item> items)
+    //{
+    //    Id = Guid.NewGuid();
+    //    Name = name;
+    //    Total = total;
+    //    Owner = "User";
+    //    DateTime = DateTime.Now;
+    //    Items = items;
+    //}
     public override bool Equals(object? obj) => obj is Receipt other && (Id == other.Id || DateTime == other.DateTime);
     public override int GetHashCode() => Id.GetHashCode();
 }

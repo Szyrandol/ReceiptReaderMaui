@@ -1,6 +1,8 @@
-﻿namespace ReceiptReader.Infastructure.Services
+﻿using ReceiptReader.ApplicationLayer.Interfaces;
+
+namespace ReceiptReader.Infastructure.Services
 {
-    public class OcrService
+    public class OcrService : IOcrService
     {
         HttpClient httpClient;
         public OcrService()
@@ -32,7 +34,6 @@
                 throw new Exception($"Error: {response.ReasonPhrase}");
             }
         }
-
         private List<Item> JsonStringToItemList(string jsonText)
         {
             Console.WriteLine(jsonText);

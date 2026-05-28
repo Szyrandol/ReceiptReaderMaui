@@ -17,7 +17,7 @@
 
     <Grid ColumnDefinitions="*,*"
           ColumnSpacing="5"
-          RowDefinitions="Auto, Auto, *, Auto"
+          RowDefinitions="Auto, Auto, *, Auto, Auto"
           RowSpacing="0">
 
         <StackLayout Grid.Column="1" Grid.Row="0">
@@ -136,9 +136,12 @@
                         Margin="5"/>
             </Grid>
         </Border>
+        <Entry Grid.Column="1" Grid.Row="2"
+            Placeholder="Add a comment"
+               Text="{Binding Receipt.Comment}"/>
 
         <Image Source="{Binding ImagePath}"
-               Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"/>
+               Grid.Row="0" Grid.Column="0" Grid.RowSpan="4"/>
 
         <FlexLayout
             Grid.Row="3"

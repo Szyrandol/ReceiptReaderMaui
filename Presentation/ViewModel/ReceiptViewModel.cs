@@ -9,7 +9,7 @@ namespace ReceiptReader.Presentation.ViewModel;
 [QueryProperty(nameof(Receipt), "Receipt")]
 public partial class ReceiptViewModel : BaseViewModel
 {
-    private readonly OcrService _ocrService;
+    private readonly IOcrService _ocrService;
     private readonly IDialogService _dialogService;
 
     [ObservableProperty]
@@ -32,7 +32,7 @@ public partial class ReceiptViewModel : BaseViewModel
     [ObservableProperty]
     public partial Category SelectedCategory {  get; set; }
     public IReadOnlyList<Category> AvailableCategories => Category.All;
-    public ReceiptViewModel(OcrService ocrService, IDialogService dialogService) // DI?
+    public ReceiptViewModel(IOcrService ocrService, IDialogService dialogService)
     {
         Title = Receipt != null ? Receipt.Name : "New Receipt"; // title?
         _ocrService = ocrService;

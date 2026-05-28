@@ -7,11 +7,12 @@ public class Receipt
     public Guid Id { get; init; }
     public string Name { get; set; }
     public double Total { get; set; }
-    public string Owner { get; set; }
-    public DateTime DateTime { get; set; }
+    public string CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
     public string? ImagePath { get; set; }
     public List<Item> Items { get; set; }
-    public string NIP { get; set; } //Żeliński poleca, niezbyt skomplikowane, ale OCR nie jest doskonały
+    //public string NIP { get; set; } //Żeliński poleca, niezbyt skomplikowane, ale OCR nie jest doskonały
+    public Category? Category { get; set; }
     //public string currencyName { get; set; } potem można dodać żeby jakoś 
 
 
@@ -20,36 +21,27 @@ public class Receipt
         Id = Guid.NewGuid();
         Total = items[^1].Price;
         items.RemoveAt(items.Count - 1);
-        NIP = (items[0].Price * 100).ToString();
+        //NIP = (items[0].Price * 100).ToString();
         items.RemoveAt(0);
         Items = items;
-        DateTime = DateTime.Now;
-        Owner = "Admin";
-        Name = $"{Owner} {Total} {DateTime}";
+        CreatedAt = DateTime.Now;
+        CreatedBy = "Admin";
+        Name = $"{CreatedBy} {Total} {CreatedAt}";
         ImagePath = imagePath;
     }
     [JsonConstructor]
-    public Receipt(Guid id, string name, double total, string owner, DateTime datetime, List<Item> items, string imagePath)
+    public Receipt(Guid id, string name, double total, string createdBy, DateTime createdAt, List<Item> items, string imagePath, Category? category = null)
     {
         Id = id == Guid.Empty ? Guid.NewGuid() : id;
         Name = name ;
         Total = total ;
-        Owner = owner ;
-        DateTime = datetime ;
+        CreatedBy = createdBy ;
+        CreatedAt = createdAt;
         Items = items ;
         ImagePath = imagePath ;
+        Category = category ?? Category.Misc ;
     }
-    //[JsonConstructor]
-    //public Receipt(string name, double total, List<Item> items)
-    //{
-    //    Id = Guid.NewGuid();
-    //    Name = name;
-    //    Total = total;
-    //    Owner = "User";
-    //    DateTime = DateTime.Now;
-    //    Items = items;
-    //}
-    public override bool Equals(object? obj) => obj is Receipt other && (Id == other.Id || DateTime == other.DateTime);
+    public override bool Equals(object? obj) => obj is Receipt other && (Id == other.Id && CreatedAt == other.CreatedAt);
     public override int GetHashCode() => Id.GetHashCode();
 }
 

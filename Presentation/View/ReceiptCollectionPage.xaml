@@ -5,12 +5,14 @@
              xmlns:viewmodel="clr-namespace:ReceiptReader.Presentation.ViewModel"
              x:DataType="viewmodel:ReceiptCollectionViewModel"
              x:Class="ReceiptReader.View.ReceiptCollectionPage"
+             x:Name="ThisPage"
              xmlns:conv="clr-namespace:ReceiptReader.Presentation.Converters"
              Title="{Binding Title}">
     
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:ReferenceEqualityMultiConverter x:Key="RefEqMulti"/>
+            <conv:StringToSolidColorBrushConverter x:Key="StringToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -32,20 +34,28 @@
                 <DataTemplate x:DataType="model:Receipt">
                     <VerticalStackLayout>
                     <!--receipt rows-->
-                        <Border>
-                            <Grid Margin="10" ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                        <Border >
+                            <Grid Margin="10" ColumnDefinitions="Auto,*,Auto" VerticalOptions="Center">
+                                <Ellipse Fill="{Binding Category.ColorArgbHex, Converter={StaticResource StringToColor}}"
+                                         WidthRequest="12"
+                                         HeightRequest="12"
+                                         VerticalOptions="Center"
+                                         Grid.Column="0"
+                                         Margin="0,0,8,0" />
                                 <Label Text="{Binding Name}"
-                                   Grid.Column="0"
+                                   Grid.Column="1"
                                    Padding="5"/>
 
                                 <Label  Text="{Binding Total, StringFormat='{0:F2}'}"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     Padding="5"
                                     LineBreakMode="TailTruncation"
                                     MaxLines="1" />
                             </Grid>
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=ToggleExpandCommand}"
+                                <TapGestureRecognizer Command="{Binding Path=ToggleExpandCommand,
+                                                                        x:DataType= viewmodel:ReceiptCollectionViewModel,
+                                                                        Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}}"
                                                       CommandParameter="{Binding .}"/>
                             </Border.GestureRecognizers>
                         </Border>
@@ -56,16 +66,22 @@
                                 <MultiBinding Converter="{StaticResource RefEqMulti}">
                                     <Binding Path="." />
                                     <Binding Path="ExpandedReceipt"
+                                             x:DataType="viewmodel:ReceiptCollectionViewModel"
                                              Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}" />
                                 </MultiBinding>
                             </ContentView.IsVisible>
 
-                            <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#EEE">
-                                <Button Text="Edit"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=EditCommand}"
+                            <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#1f1f1f">
+                                <Button Text="View" TextColor="AntiqueWhite"
+                                        Command="{Binding Path=ViewCommand,
+                                                          x:DataType= viewmodel:ReceiptCollectionViewModel,
+                                                          Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}}"
                                         CommandParameter="{Binding .}" />
-                                <Button Text="Delete"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}, Path=DeleteCommand}"
+
+                                <Button Text="Delete" TextColor="AntiqueWhite"
+                                        Command="{Binding Path=DeleteCommand,
+                                                          x:DataType= viewmodel:ReceiptCollectionViewModel,
+                                                          Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptCollectionViewModel}}}"
                                         CommandParameter="{Binding .}" />
                             </HorizontalStackLayout>
                         </ContentView>

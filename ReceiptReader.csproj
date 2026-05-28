@@ -22,6 +22,11 @@
 
 		<!--declaring a property as partial to make it observable requires this-->
 		<LangVersion>preview</LangVersion>
+		
+		
+		<!--WinRT requirement for enabling AOT deployment-->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
 
 		<!-- Display name -->
 		<ApplicationTitle>ReceiptReader</ApplicationTitle>

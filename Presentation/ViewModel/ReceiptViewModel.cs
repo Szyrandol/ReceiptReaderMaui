@@ -29,6 +29,9 @@ public partial class ReceiptViewModel : BaseViewModel
 
     [ObservableProperty]
     public partial Item? ExpandedItem { get; set; }
+    [ObservableProperty]
+    public partial Category SelectedCategory {  get; set; }
+    public IReadOnlyList<Category> AvailableCategories => Category.All;
     public ReceiptViewModel(OcrService ocrService, IDialogService dialogService) // DI?
     {
         Title = Receipt != null ? Receipt.Name : "New Receipt"; // title?
@@ -51,6 +54,9 @@ public partial class ReceiptViewModel : BaseViewModel
         {
             IsReceiptNotNull = true;
             RefreshItems();
+            _ = GetImagePath();
+            Title = Receipt.Name;
+            SelectedCategory = Receipt.Category;
         }
         else
             IsReceiptNotNull = false;
@@ -102,6 +108,7 @@ public partial class ReceiptViewModel : BaseViewModel
             if (items == null) return;
 
             Receipt = new(items, ImagePath);
+            SelectedCategory = Category.Misc;
             RefreshItems();
             Title = Receipt.Name;
             IsReceiptNotNull = true;
@@ -119,6 +126,7 @@ public partial class ReceiptViewModel : BaseViewModel
     {
         try
         {
+            Receipt.Category = SelectedCategory;
             WeakReferenceMessenger.Default.Send(new AddReceiptToCollectionMessage(Receipt));
             await Shell.Current.GoToAsync("..");//z tej linijki można zrobić osbną funkcję
         }
@@ -167,16 +175,10 @@ public partial class ReceiptViewModel : BaseViewModel
                 return;
             }
             Item updatedItem = new(selectedItem) { Name = response };
-            IReceiptRepository receiptRepository = new JsonReceiptRepository();
-            if (await receiptRepository.EditAsync(Receipt, selectedItem, updatedItem))
-            {
-                ExpandedItem = null;
-                int i = Receipt.Items.IndexOf(selectedItem);
-                Receipt.Items[i] = updatedItem;
-                RefreshItems();
-            }
-            else
-                await _dialogService.Alert("Error", "Could not edit the receipt");
+            ExpandedItem = null;
+            int i = Receipt.Items.IndexOf(selectedItem);
+            Receipt.Items[i] = updatedItem;
+            RefreshItems();
         }
         catch (Exception ex)
         {
@@ -198,22 +200,36 @@ public partial class ReceiptViewModel : BaseViewModel
                 return;
             }
             Item updatedItem = new(selectedItem) { Price = price };
-            IReceiptRepository receiptRepository = new JsonReceiptRepository();
-            if (await receiptRepository.EditAsync(Receipt, selectedItem, updatedItem))
-            {
-                ExpandedItem = null;
-                int i = Receipt.Items.IndexOf(selectedItem);
-                Receipt.Items[i] = updatedItem;
-                RefreshItems();
-                await CheckTotal();
-            }
-            else
-                await _dialogService.Alert("Error", "Could not edit the receipt");
+            ExpandedItem = null;
+            int i = Receipt.Items.IndexOf(selectedItem);
+            Receipt.Items[i] = updatedItem;
+            RefreshItems();
+            await CheckTotal();
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
             await _dialogService.Alert("Error", $"Unable to edit item price (ItemsVM.EditItemPrice): {ex.Message}", "OK");
+        }
+    }
+    [RelayCommand]
+    async Task EditReceiptName()
+    {
+        try
+        {
+            var response = await _dialogService.PromptAsync("Edit Receipt Name", "Please enter a new name for the receipt", initialValue: Receipt.Name);
+            if (response == null)
+            {
+                await _dialogService.Alert("Error", "Invalid name");
+                return;
+            }
+            Receipt.Name = response;
+            Name = Receipt.Name;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            await _dialogService.Alert("Error", $"Unable to edit receipt name (ItemsVM.EditReceiptName): {ex.Message}", "OK");
         }
     }
 }

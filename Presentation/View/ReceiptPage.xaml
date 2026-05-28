@@ -11,6 +11,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <conv:ReferenceEqualityMultiConverter x:Key="RefEqMulti"/>
+            <conv:StringToSolidColorBrushConverter x:Key="StringToColor"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -22,30 +23,47 @@
         <StackLayout Grid.Column="1" Grid.Row="0">
 
             <VerticalStackLayout>
-                <Grid Margin="5"
+                <Grid Padding="5"
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="5">
                     <Label Text="Name:" Grid.Column="0"/>
-                    <Label Text="{Binding Receipt.Name}" Grid.Column="1"/>
+                    <Label Text="{Binding Receipt.Name}" Grid.Column="1">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}},
+                                                                    Path=EditReceiptNameCommand,
+                                                                    x:DataType=viewmodel:ReceiptViewModel}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </Grid>
                 <Grid Margin="5"
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="5">
-                    <Label Text="Owner:" Grid.Column="0"/>
-                    <Label Text="{Binding Receipt.Owner}" Grid.Column="1"/>
+                    <Label Text="Created by:" Grid.Column="0"/>
+                    <Label Text="{Binding Receipt.CreatedBy}" Grid.Column="1"/>
                 </Grid>
                 <Grid Margin="5"
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="5">
-                    <Label Text="Date and Time of creation:" Grid.Column="0"/>
-                    <Label Text="{Binding Receipt.DateTime}" Grid.Column="1"/>
+                    <Label Text="Created at:" Grid.Column="0"/>
+                    <Label Text="{Binding Receipt.CreatedAt}" Grid.Column="1" />
                 </Grid>
                 <Grid Margin="5"
+                        ColumnDefinitions="*,Auto"
+                        ColumnSpacing="5">
+                    <Label Text="Category:" Grid.Column="0" />
+                    <Picker Grid.Column="1"
+                            ItemsSource="{Binding AvailableCategories}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedCategory}"/>
+                </Grid>
+                <!--<Grid Margin="5"
                         ColumnDefinitions="*,Auto"
                         ColumnSpacing="5">
                     <Label Text="NIP of the establishment:" Grid.Column="0"/>
-                    <Label Text="{Binding Receipt.NIP}" Grid.Column="1"/>
-                </Grid>
+                    <Label Text="{Binding Receipt.NIP}" Grid.Column="1">
+                        
+                    </Label>
+                </Grid>-->
             </VerticalStackLayout>
 
             <CollectionView ItemsSource="{Binding Items}" Margin="5">
@@ -67,7 +85,9 @@
                                 </Grid>
 
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=ToggleExpandCommand}"
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}},
+                                                                            Path=ToggleExpandCommand,
+                                                                            x:DataType= viewmodel:ReceiptViewModel}"
                                                       CommandParameter="{Binding .}"/>
                                 </Border.GestureRecognizers>
                             </Border>
@@ -78,16 +98,21 @@
                                     <MultiBinding Converter="{StaticResource RefEqMulti}">
                                         <Binding Path="." />
                                         <Binding Path="ExpandedItem"
-                                             Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}" />
+                                                 Source="{RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}"
+                                                 x:DataType="viewmodel:ReceiptViewModel"/>
                                     </MultiBinding>
                                 </ContentView.IsVisible>
 
-                                <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#EEE">
-                                    <Button Text="Edit Name"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=EditItemNameCommand}"
+                                <HorizontalStackLayout Padding="5" Spacing="10" BackgroundColor="#1f1f1f">
+                                    <Button Text="Edit Name" TextColor="AntiqueWhite"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}},
+                                                          Path=EditItemNameCommand,
+                                                          x:DataType= viewmodel:ReceiptViewModel}"
                                         CommandParameter="{Binding .}" />
-                                    <Button Text="Edit Price"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}}, Path=EditItemPriceCommand}"
+                                    <Button Text="Edit Price" TextColor="AntiqueWhite"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReceiptViewModel}},
+                                                          Path=EditItemPriceCommand,
+                                                          x:DataType= viewmodel:ReceiptViewModel}"
                                         CommandParameter="{Binding .}" />
                                 </HorizontalStackLayout>
                             </ContentView>
@@ -100,7 +125,7 @@
         </StackLayout>
 
         <Border Grid.Column="1" Grid.Row="1"
-                Stroke="MediumPurple" 
+                Stroke="{Binding SelectedCategory.ColorArgbHex, Converter={StaticResource StringToColor}}" 
                 Margin="5">
             <Grid  Padding="5" ColumnDefinitions="*,Auto" ColumnSpacing="5">
                 <Label Text="TOTAL:" Margin="5" Grid.Column="0"/>
@@ -115,15 +140,26 @@
         <Image Source="{Binding ImagePath}"
                Grid.Row="0" Grid.Column="0" Grid.RowSpan="3"/>
 
-        <Button Text="Choose Receipt Image" Command="{Binding GetImagePathCommand}"
-                Grid.Row="3" Grid.Column="0" Margin="8"/>
+        <FlexLayout
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Wrap="NoWrap"
+            JustifyContent="Center"
+            MinimumHeightRequest="80">
+            
+            
+            <Button Text="Choose Receipt Image" Command="{Binding GetImagePathCommand}"
+                    Margin="8"
+                    IsVisible="{Binding IsReceiptNull}"/>
 
-        <Button Text="Get Item Data" Command="{Binding GetItemsCommand}"
-                Grid.Row="3" Grid.Column="1" Margin="8"
-                IsVisible="{Binding IsReceiptNull}"/>
-        <Button Text="Save Receipt" Command="{Binding AddToCollectionCommand}"
-                Grid.Row="3" Grid.Column="1" Margin="8"
-                IsVisible="{Binding IsReceiptNotNull}"/>
+            <Button Text="Get Item Data" Command="{Binding GetItemsCommand}"
+                    Margin="8"
+                    IsVisible="{Binding IsReceiptNull}"/>
+
+            <Button Text="Save Changes" Command="{Binding AddToCollectionCommand}"
+                    Margin="8"
+                    IsVisible="{Binding IsReceiptNotNull}"/>
+        </FlexLayout>
 
         <ActivityIndicator IsVisible="{Binding IsBusy}"
                            IsRunning="{Binding IsBusy}"

@@ -13,7 +13,7 @@ public partial class ReceiptCollectionViewModel : BaseViewModel
     [ObservableProperty]
     public partial string Owner { get; set; }
     [ObservableProperty]
-    public partial Receipt ExpandedReceipt { get; set; }
+    public partial Receipt? ExpandedReceipt { get; set; }
     //some user verification in the end should be here
     public ReceiptCollectionViewModel(ReceiptService receiptService, IReceiptRepository receiptRepository)
     {
@@ -101,7 +101,7 @@ public partial class ReceiptCollectionViewModel : BaseViewModel
                 return;
             else
             {
-                await _receiptRepository.RemoveAsync(receipt); // this line should be inside of an if
+                await _receiptRepository.RemoveAsync(receipt);
                 Receipts.Remove(receipt);
                 await _receiptRepository.GetAllAsync();
             }
@@ -113,7 +113,7 @@ public partial class ReceiptCollectionViewModel : BaseViewModel
         }
     }
     [RelayCommand]
-    async Task Edit(Receipt selectedReceipt)
+    async Task View(Receipt selectedReceipt)
     {
         try
         {
@@ -128,7 +128,7 @@ public partial class ReceiptCollectionViewModel : BaseViewModel
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            await Shell.Current.DisplayAlert("Error", $"Unable to edit receipt (ReceiptsVM.Edit): {ex.Message}", "OK");
+            await Shell.Current.DisplayAlert("Error", $"Unable to view receipt (ReceiptsVM.View): {ex.Message}", "OK");
         }
     }
     [RelayCommand]
@@ -140,6 +140,7 @@ public partial class ReceiptCollectionViewModel : BaseViewModel
                 ExpandedReceipt = null;
             else
                 ExpandedReceipt = tappedReceipt;
+            OnPropertyChanged(nameof(Receipts));
         }
         catch (Exception ex)
         {
